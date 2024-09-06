@@ -25,10 +25,24 @@ serde_json = "1.0"
 # allows easy logging style functionality with asynchronous programs
 tracing = "0.1.40"
 tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+ratatui = "0.20"
+crossterm = "0.25"
 
 libp2p-kad = "0.46.0"
 
 # libp2p for peer-to-peer networking
 [dependencies.libp2p]
 version = "0.53.2"
-features = ["tokio", "gossipsub", "noise", "macros", "tcp", "quic", "yamux", "rendezvous", "ping", "identify", "cbor", "request-response", "kad", "mdns"]
+features = ["tokio", "gossipsub", "noise", "macros", "tcp", "quic", "yamux", "rendezvous", "ping", "identify", "cbor", "request-response", "kad", "mdns", "floodsub"]
+
+[[bin]]
+name = "main"
+path = "src/main.rs"
+
+[[bin]]
+name = "main_without_root"
+path = "src/main_without_root.rs"
+
+[[bin]]
+name = "main_without_ui"
+path = "src/main_without_ui.rs"
