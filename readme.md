@@ -29,24 +29,23 @@ cargo run --bin main -- --port <PORT> --nickname <NICKNAME> [--peer <PEER_ADDRES
 - --peer <PEER_ADDR>: Address of a peer to connect to (optional)
 - --bootstrap <BOOTSTRAP_ADDR>: Address of a bootstrap node (optional)
 
-Example:
+Examples:
+- Local Network (using mDNS):
 ```
-cargo run --bin main -- --port 50001 --nickname Alice
+cargo run -- --nickname Alice --port 50001
+cargo run -- --nickname Bob --port 50002
+cargo run -- --nickname Charlie --port 50003
 ```
-we will get: 
-Listening on "/ip4/127.0.0.1/tcp/50001"
-Listening on "/ip4/10.32.38.113/tcp/50001"
-
-peer2: 
+- Wide Area Network (using bootstrap):
 ```
-cargo run -- --peer /ip4/10.32.38.113/tcp/50001  --nickname Triste --port 50002
+cargo run -- --nickname BootstrapNode --port 50001  # On server with public IP
+cargo run -- --nickname Alice --bootstrap /ip4/<server_ip>/tcp/50001
+cargo run -- --nickname Bob --bootstrap /ip4/<server_ip>/tcp/50001
 ```
-
-peer3:
-```
-cargo run -- --peer /ip4/10.32.38.113/tcp/50001  --nickname Charlie --port 50003
-```
-
+- Hybrid Approach:
+cargo run -- --nickname BootstrapNode --port 50001
+cargo run -- --nickname Alice --port 50002 --bootstrap /ip4/127.0.0.1/tcp/50001
+cargo run -- --nickname Bob --port 50003 --bootstrap /ip4/127.0.0.1/tcp/50001 --peer /ip4/127.0.0.1/tcp/50002
 
 
 ### Usages
@@ -63,11 +62,11 @@ cargo run -- --peer /ip4/10.32.38.113/tcp/50001  --nickname Charlie --port 50003
 examples:
 Alice:
 /msg hello, everyone! (every peer will receive it)
-/dm Triste Hi, Triste (Triste peer will receive it)
+/dm Bob Hi, Bob (Bob peer will receive it)
 /propose test.docx (every peer will receive it)
 
 And then go to the Triste peer:
-Triste:
+Bob:
 /get test.docx (store a new copy file of test.docx)
 /create_room room1 (every peer will receive it)
 /join_room room1 (every peer will receive it)

@@ -35,14 +35,3 @@ libp2p-kad = "0.46.0"
 version = "0.53.2"
 features = ["tokio", "gossipsub", "noise", "macros", "tcp", "quic", "yamux", "rendezvous", "ping", "identify", "cbor", "request-response", "kad", "mdns", "floodsub"]
 
-[[bin]]
-name = "main"
-path = "src/main.rs"
-
-[[bin]]
-name = "main_without_root"
-path = "src/main_without_root.rs"
-
-[[bin]]
-name = "main_without_ui"
-path = "src/main_without_ui.rs"

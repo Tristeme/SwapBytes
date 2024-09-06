@@ -545,6 +545,23 @@ async fn main() -> Result<(), Box<dyn Error>> {
         // Handle network events
         while let Some(event) = swarm.select_next_some().now_or_never() {
             match event {
+                SwarmEvent::Behaviour(MyBehaviourEvent::Mdns(mdns::Event::Discovered(peers))) => {
+                    for (peer_id, addr) in peers {
+                        app.add_message(format!("Discovered peer: {:?} at {:?}", peer_id, addr));
+                
+                        // 尝试连接发现的 peer
+                        if let Err(e) = swarm.dial(addr.clone()) {
+                            app.add_message(format!("Failed to dial discovered peer {:?}: {:?}", peer_id, e));
+                        } else {
+                            app.add_message(format!("Dialing discovered peer: {:?}", peer_id));
+                        }
+                    }
+                }
+                SwarmEvent::Behaviour(MyBehaviourEvent::Mdns(mdns::Event::Expired(peers))) => {
+                    for (peer_id, _addr) in peers {
+                        app.add_message(format!("Expired peer: {:?}", peer_id));
+                    }
+                }
                 // Handle new listening address
                 SwarmEvent::NewListenAddr { address, .. } => {
                     app.add_message(format!("Listening on {:?}", address));
@@ -657,11 +674,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
                 }
                 // Handle connection established
                 SwarmEvent::ConnectionEstablished { peer_id, .. } => {
-                    app.add_message(format!("Connection established with peer {:?}", peer_id));
+                    app.add_message(format!("Connected to peer {:?}", peer_id));
                 }
                 // Handle connection closed
                 SwarmEvent::ConnectionClosed { peer_id, .. } => {
-                    app.add_message(format!("Connection closed with peer {:?}", peer_id));
+                    app.add_message(format!("Disconnected from peer {:?}", peer_id));
                 }
                 // Handle connection errors
                 SwarmEvent::OutgoingConnectionError { peer_id, error, .. } => {
@@ -677,12 +694,12 @@ async fn main() -> Result<(), Box<dyn Error>> {
             }
         }
         // Periodically check and display connection status
-        if last_status_update.elapsed() > Duration::from_secs(30) {
-            let connected_peers = swarm.connected_peers().count();
-            app.add_message(format!("Number of connected peers: {}", connected_peers));
-            app.add_message(format!("Known peers: {:?}", peer_nicknames.keys().collect::<Vec<_>>()));
-            last_status_update = Instant::now();
-        }
+        // if last_status_update.elapsed() > Duration::from_secs(30) {
+        //     let connected_peers = swarm.connected_peers().count();
+        //     app.add_message(format!("Number of connected peers: {}", connected_peers));
+        //     app.add_message(format!("Known peers: {:?}", peer_nicknames.keys().collect::<Vec<_>>()));
+        //     last_status_update = Instant::now();
+        // }
     }
 
     // Restore the terminal state before exiting
