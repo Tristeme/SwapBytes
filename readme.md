@@ -43,9 +43,11 @@ cargo run -- --nickname Alice --bootstrap /ip4/<server_ip>/tcp/50001
 cargo run -- --nickname Bob --bootstrap /ip4/<server_ip>/tcp/50001
 ```
 - Hybrid Approach:
+```
 cargo run -- --nickname BootstrapNode --port 50001
 cargo run -- --nickname Alice --port 50002 --bootstrap /ip4/127.0.0.1/tcp/50001
 cargo run -- --nickname Bob --port 50003 --bootstrap /ip4/127.0.0.1/tcp/50001 --peer /ip4/127.0.0.1/tcp/50002
+```
 
 
 ### Usages
@@ -61,18 +63,24 @@ cargo run -- --nickname Bob --port 50003 --bootstrap /ip4/127.0.0.1/tcp/50001 --
 
 examples:
 Alice:
+```
 /msg hello, everyone! (every peer will receive it)
 /dm Bob Hi, Bob (Bob peer will receive it)
 /propose test.docx (every peer will receive it)
+```
 
 And then go to the Triste peer:
 Bob:
+```
 /get test.docx (store a new copy file of test.docx)
 /create_room room1 (every peer will receive it)
 /join_room room1 (every peer will receive it)
+```
 
 And then go to the Charlie peer:
 Charlie:
+```
 /list_rooms (will show: room1)
 /join_room room1 (every peer will receive it)
 /room room1 Hi, room1! (only the members in room1 will receive it)
+```
